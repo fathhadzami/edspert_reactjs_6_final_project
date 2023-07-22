@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 
-const CourseCreateModal = ({ show, handleClose, handleSubmit }) => {
+const CourseEditModal = ({ show, handleClose, handleSubmit, data }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
   const submitData = () => {
     const submitPayload = {
-      id: Math.floor(Date.now()/1000),
+      id: data.id,
       title,
       description,
     }
 
     handleSubmit(submitPayload);
   };
+
+  useEffect(() => {
+    setDescription(data.description);
+    setTitle(data.title);
+  }, [data]);
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -28,6 +33,7 @@ const CourseCreateModal = ({ show, handleClose, handleSubmit }) => {
               type="text"
               placeholder="Enter course name"
               onChange={(e) => setTitle(e.target.value)}
+              defaultValue={title}
               />
           </Form.Group>
 
@@ -38,6 +44,7 @@ const CourseCreateModal = ({ show, handleClose, handleSubmit }) => {
               type="text"
               placeholder="description"
               onChange={(e) => setDescription(e.target.value)}
+              defaultValue={description}
               />
           </Form.Group>
         </Form>
@@ -54,4 +61,4 @@ const CourseCreateModal = ({ show, handleClose, handleSubmit }) => {
   );
 }
 
-export default CourseCreateModal;
+export default CourseEditModal;

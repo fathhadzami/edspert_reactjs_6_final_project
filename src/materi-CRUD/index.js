@@ -2,25 +2,63 @@ import { Button, Col, Container, Row, Table } from "react-bootstrap";
 import CourseCreateModal from "./components/CourseCreateModal";
 import { useEffect, useState } from "react";
 import courseService from "./utils/service";
+import CourseEditModal from "./components/CourseEditModal";
+import CourseDeleteModal from "./components/CourseDeleteModal";
 
 const MateriCRUD = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [courses, setCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState({});
 
   const toggleCreateModal = () => {
     setShowCreateModal(!showCreateModal);
-  }
+  };
 
   const handleAddCourse = (payload) => {
     courseService.addCourse(payload);
     toggleCreateModal();
     fetchCourses();
-  }
+  };
 
   const fetchCourses = () => {
     const result = courseService.getCourses();
     setCourses(result.data);
-    console.log({ result });
+    console.log({result});
+  };
+
+  const openEditModal  = (course) => {
+    setSelectedCourse(course);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal  = () => {
+    setSelectedCourse({});
+    setShowEditModal(false);
+  };
+
+  const handleEditCourse = (editPayload) => {
+    const {id, ...othersPayload} = editPayload;
+    courseService.updateCourse(id, othersPayload);
+    closeEditModal();
+    fetchCourses();
+  }
+
+  const openDeleteModal = (course) => {
+    setSelectedCourse(course);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setSelectedCourse({});
+    setShowDeleteModal(false);
+  };
+
+  const handleDeleteCourse = () => {
+    courseService.deleteCourse(selectedCourse.id);
+    closeDeleteModal();
+    fetchCourses();
   }
 
   useEffect(() => {
@@ -51,7 +89,11 @@ const MateriCRUD = () => {
                         <td>{index + 1}</td>
                         <td>{course.title}</td>
                         <td>{course.description}</td>
-                        <td></td>
+                        <td>
+                          <Button variant="warning" onClick={() => openEditModal(course)}>Edit</Button>
+                          {" "}
+                          <Button variant="danger" onClick={() => openDeleteModal(course)}>Delete</Button>
+                        </td>
                       </tr>
                     )
                   })
@@ -65,6 +107,17 @@ const MateriCRUD = () => {
       show={showCreateModal}
       handleClose={toggleCreateModal}
       handleSubmit={handleAddCourse}
+    />
+    <CourseEditModal
+      show={showEditModal}
+      handleClose={closeEditModal}
+      handleSubmit={handleEditCourse}
+      data={selectedCourse}
+    />
+    <CourseDeleteModal
+      show={showDeleteModal}
+      handleClose={closeDeleteModal}
+      onAgree={handleDeleteCourse}
     />
   </div>;
 };
