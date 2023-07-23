@@ -1,7 +1,7 @@
-import MateriCRUD from './materi-CRUD';
+import MateriRESTRouter from './materi-REST-Router';
 
 function App() {
-  return <MateriCRUD />;
+  return <MateriRESTRouter />;
 }
 
 export default App;
