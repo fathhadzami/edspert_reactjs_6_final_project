@@ -1,7 +1,7 @@
-import MateriRESTRouter from './materi-REST-Router';
+import MateriRedux from "./materi-Redux";
 
 function App() {
-  return <MateriRESTRouter />;
+  return <MateriRedux />;
 }
 
 export default App;
